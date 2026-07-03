@@ -1,0 +1,202 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(SALES)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tasks EventTask[]
+}
+
+enum Role {
+  ADMIN
+  SALES
+  FINANCE
+  OPERATIONS
+}
+
+model Customer {
+  id                  Int           @id @default(autoincrement())
+  customerName        String
+  mobileNumber        String
+  email               String?
+  address             String?
+  functionType        String
+  functionDate        DateTime
+  functionPlan        String
+  location            String
+  estimationAmountMin Decimal       @db.Decimal(10, 2)
+  estimationAmountMax Decimal       @db.Decimal(10, 2)
+  orderStatus         OrderStatus   @default(PENDING)
+  notes               String?       @db.Text
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  payments  Payment[]
+  expenses  Expense[]
+  tasks     EventTask[]
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  LOST
+  COMPLETED
+}
+
+model Payment {
+  id                   Int           @id @default(autoincrement())
+  customerId           Int
+  customer             Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  totalAmount          Decimal       @db.Decimal(10, 2)
+  paidAmount           Decimal       @db.Decimal(10, 2)
+  pendingAmount        Decimal       @db.Decimal(10, 2)
+  paymentMethod        PaymentMethod
+  transactionReference String?
+  paymentDate          DateTime
+  paymentStatus        PaymentStatus @default(NOT_PAID)
+  remarks              String?
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+}
+
+enum PaymentMethod {
+  CASH
+  UPI
+  BANK_TRANSFER
+  CHEQUE
+}
+
+enum PaymentStatus {
+  NOT_PAID
+  PARTIAL
+  PAID
+}
+
+model Expense {
+  id              Int             @id @default(autoincrement())
+  customerId      Int
+  customer        Customer        @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  expenseCategory ExpenseCategory
+  amount          Decimal         @db.Decimal(10, 2)
+  expenseDate     DateTime
+  description     String?
+  attachmentUrl   String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+}
+
+enum ExpenseCategory {
+  CATERING
+  DECORATION
+  PHOTOGRAPHY
+  TRANSPORTATION
+  VENUE
+  ACCOMMODATION
+  PRINTING
+  MISCELLANEOUS
+}
+
+model Vendor {
+  id             Int          @id @default(autoincrement())
+  vendorName     String
+  mobileNumber   String
+  email          String?
+  address        String?
+  serviceType    ServiceType
+  contractAmount Decimal?     @db.Decimal(10, 2)
+  status         VendorStatus @default(ACTIVE)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+enum ServiceType {
+  CATERING
+  DECORATION
+  PHOTOGRAPHY
+  DJ
+  SOUND_SYSTEM
+  TRANSPORTATION
+}
+
+enum VendorStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model InventoryItem {
+  id                Int                    @id @default(autoincrement())
+  itemName          String
+  category          String
+  quantityAvailable Int                    @default(0)
+  quantityUsed      Int                    @default(0)
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+
+  transactions InventoryTransaction[]
+}
+
+model InventoryTransaction {
+  id              Int           @id @default(autoincrement())
+  itemId          Int
+  item            InventoryItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  transactionType StockType
+  quantity        Int
+  notes           String?
+  createdAt       DateTime      @default(now())
+}
+
+enum StockType {
+  IN
+  OUT
+}
+
+model Vehicle {
+  id            Int           @id @default(autoincrement())
+  vehicleNumber String        @unique
+  vehicleType   String
+  driverName    String
+  capacity      Int
+  status        VehicleStatus @default(AVAILABLE)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+enum VehicleStatus {
+  AVAILABLE
+  ASSIGNED
+  MAINTENANCE
+}
+
+model EventTask {
+  id         Int        @id @default(autoincrement())
+  customerId Int
+  customer   Customer   @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  taskName   String
+  assignedTo Int?
+  user       User?      @relation(fields: [assignedTo], references: [id])
+  dueDate    DateTime
+  status     TaskStatus @default(PENDING)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
