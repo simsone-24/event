@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { customersAPI } from '../../api';
 import toast from 'react-hot-toast';
 import { ArrowLeft, Save } from 'lucide-react';
+import Field from '../../components/FormField';
 
 const FUNCTION_TYPES = ['Birthday','Wedding','Engagement','Anniversary','Corporate','Baby Shower','Reception','Other'];
 const FUNCTION_PLANS = ['Basic','Standard','Premium','Luxury'];
@@ -52,10 +53,6 @@ export default function CustomerForm() {
       toast.error(err.response?.data?.message || 'Save failed');
     } finally { setLoading(false); }
   };
-
-  const Field = ({ label, children }) => (
-    <div><label className="label">{label}</label>{children}</div>
-  );
 
   return (
     <div>

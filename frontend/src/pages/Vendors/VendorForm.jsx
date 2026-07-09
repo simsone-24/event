@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { vendorsAPI } from '../../api';
 import toast from 'react-hot-toast';
 import { ArrowLeft, Save } from 'lucide-react';
+import Field from '../../components/FormField';
 
 const SERVICE_TYPES = ['CATERING','DECORATION','PHOTOGRAPHY','DJ','SOUND_SYSTEM','TRANSPORTATION'];
 
@@ -37,8 +38,6 @@ export default function VendorForm() {
     } catch (err) { toast.error(err.response?.data?.message || 'Save failed'); }
     finally { setLoading(false); }
   };
-
-  const Field = ({ label, children }) => <div><label className="label">{label}</label>{children}</div>;
 
   return (
     <div>

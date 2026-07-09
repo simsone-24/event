@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { inventoryAPI } from '../../api';
 import toast from 'react-hot-toast';
 import { ArrowLeft, Save } from 'lucide-react';
+import Field from '../../components/FormField';
 
 export default function InventoryForm() {
   const { id } = useParams();
@@ -31,8 +32,6 @@ export default function InventoryForm() {
     } catch (err) { toast.error(err.response?.data?.message || 'Save failed'); }
     finally { setLoading(false); }
   };
-
-  const Field = ({ label, children }) => <div><label className="label">{label}</label>{children}</div>;
 
   return (
     <div>

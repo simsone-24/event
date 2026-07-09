@@ -3,6 +3,7 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { expensesAPI, customersAPI } from '../../api';
 import toast from 'react-hot-toast';
 import { ArrowLeft, Save } from 'lucide-react';
+import Field from '../../components/FormField';
 
 const CATEGORIES = ['CATERING','DECORATION','PHOTOGRAPHY','TRANSPORTATION','VENUE','ACCOMMODATION','PRINTING','MISCELLANEOUS'];
 
@@ -48,8 +49,6 @@ export default function ExpenseForm() {
     } catch (err) { toast.error(err.response?.data?.message || 'Save failed'); }
     finally { setLoading(false); }
   };
-
-  const Field = ({ label, children }) => <div><label className="label">{label}</label>{children}</div>;
 
   return (
     <div>

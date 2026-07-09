@@ -3,6 +3,7 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { paymentsAPI, customersAPI } from '../../api';
 import toast from 'react-hot-toast';
 import { ArrowLeft, Save } from 'lucide-react';
+import Field from '../../components/FormField';
 
 const METHODS = ['CASH','UPI','BANK_TRANSFER','CHEQUE'];
 
@@ -66,8 +67,6 @@ export default function PaymentForm() {
     } catch (err) { toast.error(err.response?.data?.message || 'Save failed'); }
     finally { setLoading(false); }
   };
-
-  const Field = ({ label, children }) => <div><label className="label">{label}</label>{children}</div>;
 
   const pending = (parseFloat(form.totalAmount)||0) - (parseFloat(form.paidAmount)||0);
 
